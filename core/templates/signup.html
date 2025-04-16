@@ -1,0 +1,199 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up for Anime HUB</title>
+    <style>
+        /* Basic CSS for styling */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 350px; /* Slightly wider for better spacing */
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px; /* Increased margin */
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="date"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #777;
+            font-size: 14px;
+        }
+        .password-input-wrapper {
+            position: relative;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .password-rules {
+            font-size: 12px;
+            color: gray;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        p {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Sign Up for Anime HUB</h2>
+        <form id="signupForm" method="post" action="{% url 'signup' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" required>
+            </div>
+            <div class="form-group">
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" name="dob" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{{ email }}" required>
+                <p id="emailError" class="error-message">{{ errors.email_invalid }}</p>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <div class="password-input-wrapper">
+                    <input type="password" id="password" name="password" required>
+                    <span class="password-toggle" onclick="togglePassword('password')">Show</span>
+                </div>
+                <p id="passwordRules" class="password-rules">
+                    Password must be at least 8 characters long and include a mix of letters and numbers.
+                </p>
+                <p id="passwordError" class="error-message"></p>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password:</label>
+                <div class="password-input-wrapper">
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <span class="password-toggle" onclick="togglePassword('confirmPassword')">Show</span>
+                </div>
+                <p id="confirmPasswordError" class="error-message"></p>
+            </div>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+    </div>
+
+    <script>
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleButton = passwordInput.nextElementSibling;
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleButton.textContent = "Hide";
+            } else {
+                passwordInput.type = "password";
+                toggleButton.textContent = "Show";
+            }
+        }
+
+        const passwordInput = document.getElementById('password');
+        const passwordRules = document.getElementById('passwordRules');
+        const passwordError = document.getElementById('passwordError');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+        const signupForm = document.getElementById('signupForm');
+
+        passwordInput.addEventListener('input', () => {
+            const password = passwordInput.value;
+            const hasMinLength = password.length >= 8;
+            const hasLetters = /[a-zA-Z]/.test(password);
+            const hasNumbers = /[0-9]/.test(password);
+
+            if (!hasMinLength || !hasLetters || !hasNumbers) {
+                passwordError.textContent = "Password must be at least 8 characters long and include letters and numbers.";
+            } else {
+                passwordError.textContent = "";
+            }
+        });
+
+        confirmPasswordInput.addEventListener('input', () => {
+            if (confirmPasswordInput.value !== passwordInput.value) {
+                confirmPasswordError.textContent = "Passwords do not match.";
+            } else {
+                confirmPasswordError.textContent = "";
+            }
+        });
+
+        signupForm.addEventListener('submit', (event) => {
+            if (passwordError.textContent !== "" || confirmPasswordError.textContent !== "") {
+                event.preventDefault(); // Prevent form submission if there are password errors
+            }
+        });
+    </script>
+</body>
+</html>

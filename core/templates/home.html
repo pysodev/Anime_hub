@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Anime HUB</title>
+    <style>
+        body { font-family: sans-serif; }
+        .genre-list { margin-top: 20px; }
+        .genre-list a { display: inline-block; margin-right: 10px; padding: 5px 10px; border: 1px solid #ccc; text-decoration: none; color: #333; border-radius: 5px; }
+        .genre-list a:hover { background-color: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Anime HUB!</h1>
+    <p>You are now logged in.</p>
+    <p><a href="{% url 'logout' %}">Log Out</a></p>
+
+    <div class="genre-list">
+        <h2>Genres</h2>
+        {% for genre in genres %}
+            <a href="#">{{ genre.name }}</a>
+        {% empty %}
+            <p>No genres available yet.</p>
+        {% endfor %}
+    </div>
+
+    </body>
+</html>
